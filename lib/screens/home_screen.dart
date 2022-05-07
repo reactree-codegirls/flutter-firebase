@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/models/models.dart';
+import 'package:flutter_firebase/screens/login_screen.dart';
+import 'package:flutter_firebase/screens/register_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  UserModel? userModel;
+  HomeScreen({this.userModel});
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -72,11 +77,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Login Page',
+          'Home Page',
           style: TextStyle(
             fontSize: 22,
           ),
         ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                try {
+                  await FirebaseAuth.instance.signOut();
+                  await Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (_) {
+                    return LoginScreen();
+                  }), (route) => false);
+                } catch (e) {}
+              },
+              icon: Icon(Icons.logout))
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -84,6 +102,26 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            widget.userModel != null
+                ? Card(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "User Details",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Text(widget.userModel!.name),
+                          Text(widget.userModel!.fatherName),
+                          Text(widget.userModel!.age.toString()),
+                          Text(widget.userModel!.studentId),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 40, 0, 15),
               child: TextFormField(
@@ -138,8 +176,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(onPressed: createDocument, child: Text("Submit")),
             ElevatedButton(
-                onPressed: getSingleDocument,
-                child: Text("Get Single Document")),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => RegisterScreen()));
+                },
+                child: Text("Register")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => LoginScreen()));
+                },
+                child: Text("LOGIN")),
             ElevatedButton(
                 onPressed: getManyDocuments, child: Text("Get All Documents")),
             ListView.builder(
