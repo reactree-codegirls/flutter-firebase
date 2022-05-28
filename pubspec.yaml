@@ -41,6 +41,9 @@ dependencies:
   hive: ^2.2.1
   hive_flutter: ^1.1.0
   path_provider: ^2.0.10
+  image_picker: ^0.8.5
+  firebase_storage: ^10.2.15
+  firebase_messaging: ^11.4.0
   
 
 dev_dependencies:

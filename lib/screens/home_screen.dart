@@ -1,9 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_firebase/models/models.dart';
+import 'package:flutter_firebase/screens/futureBuilderWidget.dart';
 import 'package:flutter_firebase/screens/login_screen.dart';
 import 'package:flutter_firebase/screens/register_screen.dart';
+import 'package:flutter_firebase/screens/streamBuilderWidget.dart';
+import 'package:flutter_firebase/screens/uploadImageScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   UserModel? userModel;
@@ -17,6 +21,27 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController fatherNameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   List<UserModel> allUsers = [];
+
+  initState() {
+    configureFCM();
+    super.initState();
+  }
+
+  configureFCM() async {
+    try {
+      final token = await FirebaseMessaging.instance.getToken();
+      print(token);
+
+      FirebaseMessaging.onBackgroundMessage((message) async {
+        
+      });
+
+      FirebaseMessaging.onMessage.listen((event) { 
+        
+      });
+    } catch (e) {}
+  }
+
   Future createDocument() async {
     var queryDoc = FirebaseFirestore.instance.collection("students").doc();
     try {
@@ -189,6 +214,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text("LOGIN")),
             ElevatedButton(
                 onPressed: getManyDocuments, child: Text("Get All Documents")),
+            ElevatedButton(
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => UploadImageScreen())),
+                child: Text("Upload image")),
+            ElevatedButton(
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => FutureBuilderWidget())),
+                child: Text("Future Builder")),
+            ElevatedButton(
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => StreamBuilderWidget())),
+                child: Text("Stream Builder")),
             ListView.builder(
                 shrinkWrap: true,
                 primary: false,
