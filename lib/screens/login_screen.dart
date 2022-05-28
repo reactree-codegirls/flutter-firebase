@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase/models/models.dart';
 import 'package:flutter_firebase/screens/home_screen.dart';
 import 'package:flutter_firebase/services/db.dart';
+import 'package:flutter_firebase/services/hive_service.dart';
+import 'package:flutter_firebase/services/shared_preference_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -22,7 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
               email: emailController.text, password: passwordController.text);
       if (usercredentials.user != null) {
         print(usercredentials.user!.uid);
-       UserModel? userModel= await DbService().getUser(usercredentials.user!.uid);
+        UserModel? userModel =
+            await DbService().getUser(usercredentials.user!.uid);
         await Navigator.pushAndRemoveUntil(context,
             MaterialPageRoute(builder: (_) {
           return HomeScreen(
@@ -63,9 +66,31 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             ElevatedButton(
                 onPressed: () async {
+                  // SharedPreferenceService().setData("Ali");
+                  UserModel userModel = UserModel(
+                      age: 20,
+                      fatherName: "Ali",
+                      name: "Ahmed",
+                      studentId: "123456");
+                  HiveService().setData(userModel);
+                },
+                child: Text("Set Data")),
+            ElevatedButton(
+                onPressed: () async {
+                  // SharedPreferenceService().getData();
+                  HiveService().getData();
+                },
+                child: Text("Get Data")),
+            ElevatedButton(
+                onPressed: () async {
                   loginUser();
                 },
-                child: Text("Login"))
+                child: Text("Login")),
+            ElevatedButton(
+                onPressed: () async {
+                  HiveService().looping();
+                },
+                child: Text("Debug example"))
           ],
         ),
       )),

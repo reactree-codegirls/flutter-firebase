@@ -1,5 +1,15 @@
+import 'package:hive/hive.dart';
+part 'models.g.dart';
+
+@HiveType(typeId: 1)
 class UserModel {
-  String name, fatherName, studentId;
+  @HiveField(0)
+  String name;
+  @HiveField(1)
+  String fatherName;
+  @HiveField(2)
+  String studentId;
+  @HiveField(3)
   int age;
   UserModel(
       {this.age = 0,
